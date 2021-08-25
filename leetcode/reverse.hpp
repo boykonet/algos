@@ -1,42 +1,63 @@
-#include <iostream>
+#ifndef REVERSE_HPP
+# define REVERSE_HPP
 
-#define PRINT(x) std::cout << x
 #define MAX_INT		2147483647
 #define MIN_INT		-2147483648
 
-class Solution
+class	Solution
 {
 public:
-    int reverse(int x)
+	Solution()
+	{ }
+	Solution(Solution const &r)
+	{
+		*this = r;
+	}
+	~Solution()
+	{ }
+	Solution&		operator=(Solution const &r)
+	{
+		if (this != &r)
+			;
+		return *this;
+	}
+    int				reverse(int x)
     {
 		long	num;
-        long	reverse_num = 0;
-		int		count_num = 0;
-        int		sign = 1;
-		long	d = 1;
+        long	reverse_num;
+		int		count_num;
+        int		sign;
+		long	d;
         
 		num = x;
+		reverse_num = 0;
+		count_num = 0;
+		sign = 1;
+		d = 1;
+
         if (num < 0)
 		{
 			num *= (-1);
 			sign = -1;
 		}
+
 		count_num = _count(num);
+
 		for (int i = 0; i < count_num; ++i)
 			d = d * 10;
 		while (num > 0)
 		{
-			d /= 10;
-			reverse_num = reverse_num + (num % 10) * d;
+			reverse_num = reverse_num + (num % 10) * (d / 10);
 			if (reverse_num > MAX_INT || reverse_num < MIN_INT)
 				return 0;
+			d /= 10;
 			num /= 10;
 		}
         return reverse_num * sign;
     }
 
 private:
-	int	_count(int num)
+	int				_count(int num)
 	{
 		int	count = 0;
 
@@ -49,13 +70,5 @@ private:
 	}
 };
 
-int     main()
-{
-    Solution    s;
-    int         num = 0;
-    
-    std::cin >> num;
-    PRINT(s.reverse(num));
-    
-    return (0);
-}
+
+#endif
