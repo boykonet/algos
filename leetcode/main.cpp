@@ -33,14 +33,32 @@
 /* 	PRINT(roman.romanToInt(s) << '\n'); */
 /* } */
 
-#include "valid.hpp"
-void		valid()
-{
-	Solution		v;
-	std::string		s;
+/* #include "valid.hpp" */
+/* void		valid() */
+/* { */
+/* 	Solution		v; */
+/* 	std::string		s; */
 
-	std::cin >> s;
-	PRINT(v.isValid(s));
+/* 	std::cin >> s; */
+/* 	PRINT(v.isValid(s)); */
+/* } */
+
+/* #include "strStr.hpp" */
+/* void	strStr() */
+/* { */
+/* 	Solution	a; */
+
+/* 	PRINT(a.strStr("a", "a")); */
+/* } */
+
+#include "searchInsert.hpp"
+
+void	searchInsert()
+{
+	Solution	e;
+	std::vector<int>	v = {1};
+
+	PRINT(e.searchInsert(v, 1));
 }
 
 int		main()
@@ -48,7 +66,9 @@ int		main()
 	/* reverse(); */
 	/* palindrome(); */
 	/* roman_to_int(); */
-	valid();
+	/* valid(); */
+	/* strStr(); */
+	searchInsert();
 
 	return 0;
 }
