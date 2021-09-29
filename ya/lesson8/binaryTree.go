@@ -51,16 +51,19 @@ func AddElem(head *List, elem int) *List {
 
 func FindElem(head *List, elem int) *List {
 	if head == nil {
+		fmt.Println("NO")
 		return nil
 	}
 
 	curr := head.Data
 
 	if curr == elem {
+		fmt.Println("YES")
 		return head
 	} else if curr < elem {
 		left := head.LeftChild
 		if left == nil {
+			fmt.Println("NO")
 			return nil
 		} else {
 			FindElem(left, elem)
@@ -68,6 +71,7 @@ func FindElem(head *List, elem int) *List {
 	} else if curr > elem {
 		right := head.RightChild
 		if right == nil {
+			fmt.Println("NO")
 			return nil
 		} else {
 			FindElem(right, elem)
@@ -108,24 +112,25 @@ func PrintTree(head *List, depth string) {
 }
 
 func main() {
+	var flag int
+	var head *List
+
 	reader := bufio.NewReaderSize(os.Stdin, 100000)
 
-	_, num, _ := ParseData(reader)
-	head := AddElem(nil, num)
 	for ; ; {
 		command, num, ok := ParseData(reader)
 		if ok == false {
 			break
 		}
 		if command == "SEARCH" {
-			elem := FindElem(head, num)
-			if elem == nil {
-				fmt.Println("NO")
-			} else {
-				fmt.Println("YES")
-			}
+			FindElem(head, num)
 		} else if command == "ADD" {
-			AddElem(head, num)
+			if flag == 0 {
+				head = AddElem(head, num)
+				flag = 1
+			} else {
+				AddElem(head, num)
+			}
 		} else if command == "PRINTTREE" {
 			PrintTree(head, "")
 		}
