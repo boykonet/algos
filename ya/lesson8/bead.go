@@ -39,38 +39,16 @@ func FindNilElements(m map[int][]int) []int {
 	return elements
 }
 
-func CountLen(m map[int][]int, head, elem, count int) int {
+func CountLen(m map[int][]int, head, elem, count int, max *int) {
 	s := m[head]
 
 	if elem == head {
-		return count
-	} else {
-		if s == nil {
-			return count
-		}
-		for i := 0; i < len(s); i++ {
-			return CountLen(m, s[i], elem, count + 1)
-		}
+		*max = count
+		return
 	}
-	return count
-
-
-
-	// e := m[head]
-
-	// fmt.Printf("count = %v, elem = %v, head = %v\n", count, elem, head)
-	// if head == elem {
-	// 	return count
-	// } else {
-	// 	count++
-	// 	for i := 0; i < len(e); i++ {
-	// 		if head == elem {
-	// 			return CountLen(m, head, elem, count)
-	// 		} else {
-	// 			return CountLen(m, e[i], elem, count)
-	// 		}
-	// 	}
-	// }
+	for i := 0; i < len(s); i++ {
+		CountLen(m, s[i], elem, count + 1, max)
+	}
 }
 
 func Max(a, b int) int {
@@ -82,14 +60,14 @@ func Max(a, b int) int {
 
 func FindDiameter(m map[int][]int, nilElements []int, head int) int {
 	var lens []int
+	var max int
 
 	if len(nilElements) == 0 {
 		return 0
 	}
 	for _, v := range nilElements {
-		a := CountLen(m, head, v, 0)
-		fmt.Println("a =", a)
-		lens = append(lens, a)
+		CountLen(m, head, v, 0, &max)
+		lens = append(lens, max)
 	}
 	sort.Ints(lens)
 	if len(nilElements) == 1 {
@@ -112,13 +90,8 @@ func main() {
 		AddElem(m, l, r)
 	}
 	head := FindHead(m)
-	fmt.Println(m)
 	m[head] = m[head][1:]
-	// fmt.Println(head)
 
 	e := FindNilElements(m)
 	fmt.Println(FindDiameter(m, e, head))
-	// fmt.Println(CountLen(m, head, e[0], 0))
-	// fmt.Println(CountLen(m, head, e[1], 0))
-	// fmt.Println(CountLen(m, head, e[2], 0))
 }
