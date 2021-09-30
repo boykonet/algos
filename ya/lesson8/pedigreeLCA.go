@@ -6,9 +6,12 @@ import (
 	"bufio"
 )
 
-type Parent struct {
-	NameParent	string
-	Depth		int
+func FindDepth(m map[string]string, name string, currDepth int) int {
+	if name == "" {
+		return currDepth + 1
+	} else {
+		return FindDepth(m, m[name], currDepth + 1)
+	}
 }
 
 func GetData(reader *bufio.Reader) (string, string, bool) {
@@ -21,48 +24,44 @@ func GetData(reader *bufio.Reader) (string, string, bool) {
 	return "", "", false
 }
 
-func AddElem(m map[string]Parent, name_child, name_parent string) {
-	if len(m) == 0 {
-		m[name_child] = Parent{ NameParent:name_parent, Depth:1 }
-		m[name_parent] = Parent{ NameParent:"", Depth:0 }
-	} else {
-		m[name_child] = Parent{ name_parent, m[name_parent].Depth + 1 }
+func AddElem(m map[string]string, name_child, name_parent string) {
+	_, ok := m[name_parent]
+	if ok == false {
+		m[name_parent] = ""
 	}
+
+	m[name_child] = name_parent
 }
 
-func FindParentToChild(m map[string]Parent, parent, child string) (string, bool) {
+func FindParentToChild(m map[string]string, parent, child string) (string, bool) {
 
 	curr := m[child]
 
-	if curr.NameParent == "" {
+	if curr == "" {
 		return "", false
 	} else {
-		if curr.NameParent == parent {
+		if curr == parent {
 			return parent, true
 		} else {
-			return FindParentToChild(m, parent, curr.NameParent)
+			return FindParentToChild(m, parent, curr)
 		}
 	}
 }
 
-func FindParentToTwoChild(m map[string]Parent, first, second string) string {
-	firstParent := m[first]
-	secondParent := m[second]
-
-	if firstParent.NameParent == "" && secondParent.NameParent == "" {
+func FindParentToTwoChild(m map[string]string, first, second string, firstDepth, secondDepth int) string {
+	if first == second {
 		return first
 	}
 
-	if firstParent.Depth == secondParent.Depth {
-		if firstParent.NameParent == secondParent.NameParent {
-			return firstParent.NameParent
-		} else {
-			return FindParentToTwoChild(m, firstParent.NameParent, secondParent.NameParent)
-		}
-	} else if firstParent.Depth > secondParent.Depth {
-		return FindParentToTwoChild(m, firstParent.NameParent, second)
+	firstParent := m[first]
+	secondParent := m[second]
+
+	if firstDepth == secondDepth {
+		return FindParentToTwoChild(m, firstParent, secondParent, firstDepth - 1, secondDepth - 1)
+	} else if firstDepth > secondDepth {
+		return FindParentToTwoChild(m, firstParent, second, firstDepth - 1, secondDepth)
 	} else {
-		return FindParentToTwoChild(m, first, secondParent.NameParent)
+		return FindParentToTwoChild(m, first, secondParent, firstDepth, secondDepth - 1)
 	}
 }
 
@@ -74,7 +73,7 @@ func main() {
 
 	fmt.Fscan(reader, &count)
 
-	m := make(map[string]Parent)
+	m := make(map[string]string)
 
 	for i := 0; ; i++ {
 		first, second, status := GetData(reader)
@@ -94,12 +93,11 @@ func main() {
 				if ans == true {
 					res = append(res, p)
 				} else {
-					res = append(res, FindParentToTwoChild(m, first, second))
+					res = append(res, FindParentToTwoChild(m, first, second, FindDepth(m, first, 0), FindDepth(m, second, 0)))
 				}
 			}
 		}
 	}
-	fmt.Println(m)
 	for _, v := range res {
 		fmt.Println(v)
 	}
