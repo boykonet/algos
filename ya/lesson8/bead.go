@@ -8,38 +8,22 @@ import (
 )
 
 func AddElem(m map[int][]int, first, second int) {
-	_, ok := m[first]
-	if ok == false {
-		m[first] = append(m[first], 0)
-	}
 	m[first] = append(m[first], second)
-	_, ok = m[second]
-	if ok == false {
-		m[second] = nil
-	}
+	m[second] = append(m[second], first)
 }
 
-func FindHead(m map[int][]int) int {
-	for key, value := range m {
-		if len(value) > 0 && value[0] == 0 {
-			return key
-		}
-	}
-	return 0
-}
-
-func FindNilElements(m map[int][]int) []int {
+func FindSheets(m map[int][]int) []int {
 	var elements []int
 
 	for key, value := range m {
-		if len(value) == 0 {
+		if len(value) == 1 {
 			elements = append(elements, key)
 		}
 	}
 	return elements
 }
 
-func CountLen(m map[int][]int, head, elem, count int, max *int) {
+func CountLen(m map[int][]int, vertexs map[int]bool, head, elem, count int, max *int) {
 	s := m[head]
 
 	if elem == head {
@@ -47,7 +31,8 @@ func CountLen(m map[int][]int, head, elem, count int, max *int) {
 		return
 	}
 	for i := 0; i < len(s); i++ {
-		CountLen(m, s[i], elem, count + 1, max)
+		vertexs[s[i]] = true
+		CountLen(m, vertexs, s[i], elem, count + 1, max)
 	}
 }
 
@@ -62,11 +47,12 @@ func FindDiameter(m map[int][]int, nilElements []int, head int) int {
 	var lens []int
 	var max int
 
+
 	if len(nilElements) == 0 {
 		return 0
 	}
 	for _, v := range nilElements {
-		CountLen(m, head, v, 0, &max)
+		CountLen(m, make(map[int]bool), head, v, 0, &max)
 		lens = append(lens, max)
 	}
 	sort.Ints(lens)
@@ -89,9 +75,11 @@ func main() {
 		fmt.Fscan(reader, &l, &r)
 		AddElem(m, l, r)
 	}
-	head := FindHead(m)
-	m[head] = m[head][1:]
 
-	e := FindNilElements(m)
-	fmt.Println(FindDiameter(m, e, head))
+	fmt.Println(m)
+
+	e := FindSheets(m)
+	sort.Ints(e)
+	fmt.Println(e)
+	// fmt.Println(FindDiameter(m, e, head))
 }
