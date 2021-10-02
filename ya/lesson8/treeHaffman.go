@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 	"bufio"
-	// "strings"
+	"strings"
 )
 
 type Node struct {
@@ -35,23 +35,29 @@ func BuildTree(s string) *Node {
 	return head
 }
 
-func Decoding(head *Node, prefix string, ans []string) []string {
+var ans []string
 
+func Decoding(head *Node, prefix []string) []string {
 	if head.Left == nil && head.Right == nil {
-		ans = append(ans, prefix)
-		return ans
+		return prefix
 	}
 
-	prefix += "0"
+	prefix = append(prefix, "0")
 
-	Decoding(head.Left, prefix, ans)
+	a := Decoding(head.Left, prefix)
+	if a != nil {
+		ans = append(ans, strings.Join(a, ""))
+	}
 
 	prefix = prefix[:len(prefix) - 1]
-	prefix += "1"
+	prefix = append(prefix, "1")
 
-	Decoding(head.Right, prefix, ans)
+	b := Decoding(head.Right, prefix)
+	if b != nil {
+		ans = append(ans, strings.Join(b, ""))
+	}
 	prefix = prefix[:len(prefix) - 1]
-	return ans
+	return nil
 }
 
 func main() {
@@ -67,15 +73,15 @@ func main() {
 		fmt.Fscan(reader, &str)
 		codes = append(codes, str)
 	}
-	fmt.Println(codes)
+
 	for _, s := range codes {
-		var ans []string
-		var prefix string
+		var prefix []string
+		ans = []string{}
 
 		head := BuildTree(s)
-		ans = Decoding(head, prefix, ans)
+		Decoding(head, prefix)
 
-		fmt.Println("len =", len(ans))
+		fmt.Println(len(ans))
 		for _, a := range ans {
 			fmt.Println(a)
 		}
