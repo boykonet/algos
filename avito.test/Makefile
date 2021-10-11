@@ -1,7 +1,5 @@
-run:
-	docker-compose up
+up:
+	docker-compose up -d
 
-delete_database:
-	docker stop avitotest_db_1
-	docker rm avitotest_db_1
-	docker rmi mysql:latest
+down:
+	docker-compose down

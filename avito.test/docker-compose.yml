@@ -7,11 +7,18 @@ services:
   #   volumes:
   #     - ./database:/database
   db:
-    image: "mysql"
-    command: --default-authentication-plugin=mysql_native_password
+    image: postgres
+    # command: bash -c "psql -U gkarina_user -d gkarina_database -f /files/create_tables.sql"
     restart: always
+    container_name: pg
+    networks:
+      - default
+    ports:
+      - 5432:5432
+    volumes:
+      - ./database:/var/lib/postgresql
+      - ./postgres/create_tables.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
-      MYSQL_ROOT_PASSWORD: gkarina_root_password
-      MYSQL_DATABASE: my_best_database
-      MYSQL_USER: gkarina
-      MYSQL_PASSWORD: gkarina_user_password
+      POSTGRES_PASSWORD: gkarina_password
+      POSTGRES_USER: gkarina_user
+      POSTGRES_DB: gkarina_database
